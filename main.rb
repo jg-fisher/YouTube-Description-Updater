@@ -23,8 +23,10 @@ account = Yt::Account.new refresh_token: ENV["refresh_token"]
 videos = account.videos
 
 videos.each do |collection_video|
-  video = Yt::Video.new id: collection_video.id, auth: account
-  puts "Processing: #{video.title}"
-  new_description = generate_new_description(video.description)
-  video.update description: new_description
+  fork do
+    video = Yt::Video.new id: collection_video.id, auth: account
+    puts "Processing: #{video.title}"
+    new_description = generate_new_description(video.description)
+    video.update description: new_description
+  end
 end
