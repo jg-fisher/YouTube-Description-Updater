@@ -14,14 +14,13 @@ def generate_new_description(description)
     new_desc = matches[0] + divider + File.read("info")
     new_desc
   else
-    puts "Description did not contain: #{divider}"
+    puts "##### Description did not contain: #{divider} #####"
     description
   end
 end
 
-channel = Yt::Channel.new id: ENV["channel_id"]
 account = Yt::Account.new refresh_token: ENV["refresh_token"]
-videos = channel.videos
+videos = account.videos
 
 videos.each do |collection_video|
   video = Yt::Video.new id: collection_video.id, auth: account
@@ -29,4 +28,3 @@ videos.each do |collection_video|
   new_description = generate_new_description(video.description)
   video.update description: new_description
 end
-
