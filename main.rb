@@ -7,14 +7,15 @@ Yt.configure do |config|
   config.client_secret = ENV["client_secret"]
 end
 
-def generate_new_description(description)
+def generate_new_description(video)
+  description = video.description
   divider = "PEACE!"
   if description.include? divider
     matches = description.split(divider)
     new_desc = matches[0] + divider + File.read("info")
     new_desc
   else
-    puts "##### Description did not contain: #{divider} #####"
+    puts "#####\n#{video.title}\nIs missing divider: #{divider}\n#####"
     description
   end
 end
@@ -25,8 +26,8 @@ videos = account.videos
 videos.each do |collection_video|
   fork do
     video = Yt::Video.new id: collection_video.id, auth: account
-    puts "Processing: #{video.title}"
-    new_description = generate_new_description(video.description)
+    new_description = generate_new_description(video)
     video.update description: new_description
   end
+  puts "All videos processed"
 end
